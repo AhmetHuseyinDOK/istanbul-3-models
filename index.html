@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Istanbul — 1 prompt, 3 models</title>
+<meta name="description" content="The same prompt given to Claude Opus 5.5 and Gemini 4 Argon (medium and high). Tap a city to explore it live.">
+<meta name="twitter:card" content="player">
+<meta name="twitter:title" content="Istanbul — 1 prompt, 3 models">
+<meta name="twitter:description" content="Claude Opus 5.5 vs Gemini 4 Argon (medium &amp; high). Tap a city to explore it live.">
+<meta name="twitter:image" content="https://ahmethuseyindok.github.io/istanbul-3-models/card.png">
+<meta name="twitter:player" content="https://ahmethuseyindok.github.io/istanbul-3-models/?embed=1">
+<meta name="twitter:player:width" content="600">
+<meta name="twitter:player:height" content="600">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Istanbul — 1 prompt, 3 models">
+<meta property="og:description" content="Claude Opus 5.5 vs Gemini 4 Argon (medium &amp; high). Tap a city to explore it live.">
+<meta property="og:image" content="https://ahmethuseyindok.github.io/istanbul-3-models/card.png">
+<meta property="og:url" content="https://ahmethuseyindok.github.io/istanbul-3-models/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root { --ink: #1f2731; --muted: #1f273199; --bg: #ece6dc; --gap: calc(var(--s) * 0.008); }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; overflow: hidden; background: #101418; font-family: Outfit, system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  body { display: grid; place-items: center; }
+  #board {
+    --s: min(100vw, 100vh);
+    width: var(--s); height: var(--s); position: relative; overflow: hidden;
+    display: grid; grid-template: 1fr 1fr / 1fr 1fr; gap: var(--gap); padding: var(--gap);
+    background: var(--bg); user-select: none; -webkit-user-select: none;
+  }
+  .tile { position: relative; overflow: hidden; border-radius: calc(var(--s) * 0.018); background: #dfe3e2; }
+  .tile iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; display: block; }
+  .tap { position: absolute; inset: 0; cursor: zoom-in; z-index: 2; }
+  .label {
+    position: absolute; left: 50%; bottom: calc(var(--s) * 0.016); transform: translateX(-50%); z-index: 3;
+    display: flex; align-items: center; gap: calc(var(--s) * 0.01); white-space: nowrap; pointer-events: none;
+    padding: calc(var(--s) * 0.009) calc(var(--s) * 0.016); border-radius: 999px;
+    background: rgba(255, 255, 255, 0.9); color: var(--ink); box-shadow: 0 4px 18px rgba(15, 20, 30, 0.18);
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    font-size: calc(var(--s) * 0.021); font-weight: 700; letter-spacing: 0.01em;
+  }
+  .dot { width: calc(var(--s) * 0.014); height: calc(var(--s) * 0.014); border-radius: 50%; flex: none; }
+  .effort {
+    font-size: calc(var(--s) * 0.015); font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em;
+    padding: calc(var(--s) * 0.003) calc(var(--s) * 0.009); border-radius: 999px; background: #1f27310f; color: var(--muted);
+  }
+  .claude .dot { background: #d97757; }
+  .gemini .dot { background: linear-gradient(135deg, #4285f4, #9b72cb 55%, #d96570); }
+
+  #intro { display: flex; flex-direction: column; justify-content: center; padding: 0 calc(var(--s) * 0.04); color: var(--ink); background: #f7f3ec; }
+  #intro h1 { font-size: calc(var(--s) * 0.068); font-weight: 800; letter-spacing: 0.12em; line-height: 1; }
+  #intro h2 { margin-top: calc(var(--s) * 0.014); font-size: calc(var(--s) * 0.03); font-weight: 500; line-height: 1.2; }
+  #intro h2 b { font-weight: 800; }
+  #intro ul { list-style: none; margin-top: calc(var(--s) * 0.03); display: grid; gap: calc(var(--s) * 0.011); }
+  #intro li { display: flex; align-items: center; gap: calc(var(--s) * 0.011); font-size: calc(var(--s) * 0.019); font-weight: 600; }
+  #intro li span { color: var(--muted); font-weight: 400; }
+  #intro p { margin-top: calc(var(--s) * 0.03); font-size: calc(var(--s) * 0.016); line-height: 1.45; color: var(--muted); }
+
+  /* Focus mode: one city fills the square and takes input. */
+  #board.focus .tile:not(.on) { visibility: hidden; }
+  #board.focus .tile.on { position: absolute; inset: 0; border-radius: 0; z-index: 5; }
+  #board.focus .tile.on .tap { display: none; }
+  #back {
+    position: absolute; top: calc(var(--s) * 0.02); left: calc(var(--s) * 0.02); z-index: 9; display: none;
+    border: 0; cursor: pointer; font: inherit; font-size: calc(var(--s) * 0.022); font-weight: 700; color: var(--ink);
+    padding: calc(var(--s) * 0.011) calc(var(--s) * 0.02); border-radius: 999px;
+    background: rgba(255, 255, 255, 0.92); box-shadow: 0 4px 18px rgba(15, 20, 30, 0.2);
+  }
+  #board.focus #back { display: block; }
+  #board.focus .tile.on .label { bottom: calc(var(--s) * 0.024); font-size: calc(var(--s) * 0.026); }
+  #board.focus .tile.on .effort { font-size: calc(var(--s) * 0.018); }
+</style>
+</head>
+<body>
+<main id="board">
+  <section class="tile" id="intro">
+    <h1>ISTANBUL</h1>
+    <h2><b>1 prompt</b>, 3 models.<br>Live Three.js cities.</h2>
+    <ul>
+      <li class="claude"><i class="dot"></i>Claude Opus 5.5 <span>· medium</span></li>
+      <li class="gemini"><i class="dot"></i>Gemini 4 Argon <span>· medium</span></li>
+      <li class="gemini"><i class="dot"></i>Gemini 4 Argon <span>· high</span></li>
+    </ul>
+    <p>Real Istanbul time and live weather.<br>Tap a city to rotate, pan and zoom it.</p>
+  </section>
+  <section class="tile claude" data-src="claude-opus/">
+    <div class="tap"></div>
+    <div class="label"><i class="dot"></i>Claude Opus 5.5<span class="effort">medium</span></div>
+  </section>
+  <section class="tile gemini" data-src="gemini-medium/">
+    <div class="tap"></div>
+    <div class="label"><i class="dot"></i>Gemini 4 Argon<span class="effort">medium</span></div>
+  </section>
+  <section class="tile gemini" data-src="gemini-high/">
+    <div class="tap"></div>
+    <div class="label"><i class="dot"></i>Gemini 4 Argon<span class="effort">high</span></div>
+  </section>
+  <button id="back" type="button">← All 3</button>
+</main>
+<script>
+const board = document.getElementById('board');
+const tiles = [...document.querySelectorAll('.tile[data-src]')];
+
+for (const tile of tiles) {
+  const frame = document.createElement('iframe');
+  frame.src = tile.dataset.src;
+  frame.title = tile.querySelector('.label').textContent;
+  frame.allow = 'autoplay; fullscreen';
+  tile.prepend(frame);
+}
+
+// In-app webviews disagree on which of touch/pointer/mouse events reach a
+// framed page, so listen to all of them and drop the duplicates.
+let lastInput = 0;
+function onTap(el, fn) {
+  const handler = e => {
+    if (e.cancelable) e.preventDefault();
+    const now = performance.now();
+    if (now - lastInput < 120) return;
+    lastInput = now;
+    fn();
+  };
+  for (const type of ['touchstart', 'pointerdown', 'mousedown']) el.addEventListener(type, handler, { passive: false });
+}
+
+function focus(tile) {
+  tiles.forEach(t => t.classList.toggle('on', t === tile));
+  board.classList.toggle('focus', !!tile);
+}
+tiles.forEach(tile => onTap(tile.querySelector('.tap'), () => focus(tile)));
+onTap(document.getElementById('back'), () => focus(null));
+
+const pick = new URLSearchParams(location.search).get('city');
+if (pick) focus(tiles.find(t => t.dataset.src.startsWith(pick)) || null);
+</script>
+</body>
+</html>

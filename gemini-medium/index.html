@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ISTANBUL — Miniature Isometric 3D Living City</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main id="stage-container" aria-label="Interactive 3D Miniature Istanbul">
+      <canvas id="city-canvas" width="1080" height="1080"></canvas>
+
+      <!-- Top-Center Minimal Editorial Poster Header -->
+      <header id="editorial-header">
+        <h1 class="city-title">ISTANBUL</h1>
+        <button
+          id="weather-icon-btn"
+          class="weather-icon-wrap"
+          type="button"
+          title="Click to cycle weather conditions (or return to Live Istanbul Weather)"
+          aria-label="Current Istanbul Weather"
+        ></button>
+        <div
+          id="date-line"
+          class="city-date"
+          title="Click to preview Morning, Afternoon, Sunset, Evening, Night or Live Istanbul Time"
+        >
+          FRI, OCT 16 • 09:16
+        </div>
+        <div
+          id="temp-line"
+          class="city-temp"
+          title="Click to cycle weather conditions"
+        >
+          18°C
+        </div>
+      </header>
+
+      <!-- Subtle Floating Landmark Hover Badge -->
+      <div id="hover-card" class="hover-card" role="status" aria-live="polite">
+        <div id="hover-title" class="hover-title">Hagia Sophia</div>
+        <div id="hover-subtitle" class="hover-subtitle">Sultanahmet</div>
+      </div>
+
+      <!-- Subtle Ambient World Event Whisper -->
+      <div id="ambient-whisper" class="ambient-whisper" aria-live="polite"></div>
+    </main>
+
+    <script type="module" src="./dist/main.js"></script>
+  </body>
+</html>

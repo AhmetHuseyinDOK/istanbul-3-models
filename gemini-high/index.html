@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>ISTANBUL — Miniature Living 3D World</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+      media="print"
+      onload="this.media='all'"
+    />
+    <style>:root{--bg-solid:#e8dfd1;--text-primary:#24303f;--text-secondary:#24303fc2;--card-bg:#fffcf6e0;--card-border:#24303f1f;--stage-scale:1}*{box-sizing:border-box;-webkit-user-select:none;user-select:none;margin:0;padding:0}html,body{background-color:var(--bg-solid);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;justify-content:center;align-items:center;width:100%;height:100%;font-family:Outfit,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial,sans-serif;display:flex;overflow:hidden}#stage-wrapper{aspect-ratio:1;background-color:var(--bg-solid);width:1080px;max-width:100vw;height:1080px;max-height:100vh;position:relative;overflow:hidden}@media (width<=1080px),(height<=1080px){#stage-wrapper{width:min(100vw,100vh);height:min(100vw,100vh)}}#canvas-container{z-index:1;cursor:grab;width:100%;height:100%;position:absolute;inset:0}#canvas-container:active{cursor:grabbing}#canvas-container.hovering-interactive{cursor:pointer}#poster-header{z-index:2;text-align:center;pointer-events:none;color:var(--text-primary);flex-direction:column;justify-content:flex-start;align-items:center;gap:7px;display:flex;position:absolute;top:3.4%;left:50%;transform:translate(-50%)}#city-title{letter-spacing:.22em;text-indent:.22em;text-transform:uppercase;text-shadow:0 2px 16px var(--bg-solid), 0 4px 24px #00000014;font-size:clamp(38px,6cqmin,64px);font-weight:800;line-height:1}#weather-icon-btn{pointer-events:auto;cursor:pointer;filter:drop-shadow(0 4px 12px #00000024);justify-content:center;align-items:center;width:clamp(44px,5.8cqmin,62px);height:clamp(44px,5.8cqmin,62px);margin:1px 0;transition:transform .35s cubic-bezier(.34,1.56,.64,1);display:flex}#weather-icon-btn:hover{transform:scale(1.1)}#weather-icon-btn:active{transform:scale(.95)}#weather-icon-btn svg{width:100%;height:100%;overflow:visible}#date-display{pointer-events:auto;cursor:pointer;letter-spacing:.2em;text-indent:.2em;text-transform:uppercase;color:var(--text-secondary);text-shadow:0 1px 10px var(--bg-solid), 0 0 16px var(--bg-solid);font-size:clamp(11px,1.32cqmin,14px);font-weight:700;line-height:1.2}#date-display:hover{opacity:.95}#temp-display{pointer-events:auto;cursor:pointer;letter-spacing:.05em;text-shadow:0 2px 12px var(--bg-solid), 0 0 18px var(--bg-solid);margin-top:1px;font-size:clamp(20px,2.65cqmin,28px);font-weight:800;line-height:1.1;transition:transform .25s}#temp-display:hover{transform:scale(1.05)}#hover-tooltip{z-index:3;pointer-events:none;opacity:0;background:var(--card-bg);-webkit-backdrop-filter:blur(10px);border:1px solid var(--card-border);white-space:nowrap;border-radius:14px;flex-direction:column;align-items:center;gap:2px;padding:7px 13px;transition:opacity .18s,transform .22s cubic-bezier(.22,1,.36,1);display:flex;position:absolute;transform:translate(-50%,-130%)scale(.92);box-shadow:0 8px 24px #0f172424}#hover-tooltip.visible{opacity:1;transform:translate(-50%,-142%)scale(1)}#tooltip-title{letter-spacing:.03em;color:var(--text-primary);font-size:13px;font-weight:700}#tooltip-subtitle{letter-spacing:.04em;color:var(--text-secondary);font-size:10.5px;font-weight:500}</style>
+    <script type="module" crossorigin src="./assets/index-DJ-lRrLG.js"></script>
+  </head>
+  <body>
+    <div id="stage-wrapper">
+      <header id="poster-header">
+        <h1 id="city-title">ISTANBUL</h1>
+        <div id="weather-icon-btn" title="Click to experience different Istanbul weather moods"></div>
+        <div id="date-display" title="Click to transition through Istanbul's day &amp; night cycle">FRIDAY, OCTOBER 16, 2026</div>
+        <div id="temp-display" title="Click to toggle live weather">19°C</div>
+      </header>
+
+      <div id="canvas-container"></div>
+
+      <div id="hover-tooltip">
+        <div id="tooltip-title">Hagia Sophia</div>
+        <div id="tooltip-subtitle">Sultanahmet · Historical Peninsula</div>
+      </div>
+    </div>
+
+  </body>
+</html>
